@@ -20,27 +20,27 @@ void XmodemPortInit(XmodemPort *port, void send_data(uint8_t *, uint16_t))
 HAL_StatusTypeDef ExtractDataFromPacket(uint8_t *packet, uint8_t *data)
 {
 	memcpy(&received_packet, packet, sizeof(received_packet));
-	
+
 	if(received_packet.header != SOH)
 	{
 		return HAL_ERROR;
 	}
-	
+
 	if(received_packet.packet_number + received_packet.packet_number_comp != 0xFF)
 	{
 		return HAL_ERROR;
 	}
-	
+
 	if(!VerifyCRC16(packet, PacketSize))
 	{
 		return HAL_ERROR;
 	}
-	
+
 	memcpy(data, received_packet.data, sizeof(received_packet.data));
 	return HAL_OK;
 }
 
-HAL_StatusTypeDef Unpack(XmodemPort *port, uint8_t *packet, uint16_t length, uint8_t *data)
+HAL_StatusTypeDef Unpack(XmodemPort *port, uint8_t *packet, uint16_t length, uint8_t *data, uint16_t *data_length)
 {
 	if(length < 3)
 	{
@@ -78,16 +78,17 @@ HAL_StatusTypeDef Unpack(XmodemPort *port, uint8_t *packet, uint16_t length, uin
 			uint8_t tx = ACK;
 			port->send_data(&tx, 1);
 		}
-		else 
+		else
 		{
 			uint8_t tx = NAK;
 			port->send_data(&tx, 1);
 		}
 	}
-	else 
+	else
 	{
 		return HAL_ERROR;
 	}
+	*data_length = PacketDataSize;
 	return HAL_OK;
 }
 

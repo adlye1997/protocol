@@ -39,7 +39,7 @@ typedef enum
 
 void XmodemPortInit(XmodemPort *port, void send_data(uint8_t *, uint16_t));
 HAL_StatusTypeDef ExtractDataFromPacket(uint8_t *packet, uint8_t *data);
-HAL_StatusTypeDef Unpack(XmodemPort *port, uint8_t *packet, uint16_t length, uint8_t *data);
+HAL_StatusTypeDef Unpack(XmodemPort *port, uint8_t *packet, uint16_t length, uint8_t *data, uint16_t *data_length);
 void TramsmitPacket(uint8_t *data, uint16_t length, uint8_t *packet, uint8_t packet_number);
 void XmodemTickTask(XmodemPort *port);
 
